@@ -1,0 +1,157 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="MovieModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="MovieModelStoreContainer">
+    <EntitySet Name="Booking" EntityType="MovieModel.Store.Booking" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="BookingItem" EntityType="MovieModel.Store.BookingItem" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Cineplex" EntityType="MovieModel.Store.Cineplex" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="CorporateEvent" EntityType="MovieModel.Store.CorporateEvent" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Enquiry" EntityType="MovieModel.Store.Enquiry" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Movie" EntityType="MovieModel.Store.Movie" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="MovieComingSoon" EntityType="MovieModel.Store.MovieComingSoon" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="MovieSession" EntityType="MovieModel.Store.MovieSession" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="FK__BookingIt__Booki__4959E263" Association="MovieModel.Store.FK__BookingIt__Booki__4959E263">
+      <End Role="Booking" EntitySet="Booking" />
+      <End Role="BookingItem" EntitySet="BookingItem" />
+    </AssociationSet>
+    <AssociationSet Name="FK__BookingIt__Sessi__4A4E069C" Association="MovieModel.Store.FK__BookingIt__Sessi__4A4E069C">
+      <End Role="MovieSession" EntitySet="MovieSession" />
+      <End Role="BookingItem" EntitySet="BookingItem" />
+    </AssociationSet>
+    <AssociationSet Name="FK__MovieSess__Cinep__41B8C09B" Association="MovieModel.Store.FK__MovieSess__Cinep__41B8C09B">
+      <End Role="Cineplex" EntitySet="Cineplex" />
+      <End Role="MovieSession" EntitySet="MovieSession" />
+    </AssociationSet>
+    <AssociationSet Name="FK__MovieSess__Movie__40C49C62" Association="MovieModel.Store.FK__MovieSess__Movie__40C49C62">
+      <End Role="Movie" EntitySet="Movie" />
+      <End Role="MovieSession" EntitySet="MovieSession" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Booking">
+    <Key>
+      <PropertyRef Name="BookingID" />
+    </Key>
+    <Property Name="BookingID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="CustomerEmail" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="TicketNum" Type="int" Nullable="false" />
+    <Property Name="TotalPrice" Type="money" Nullable="false" />
+  </EntityType>
+  <EntityType Name="BookingItem">
+    <Key>
+      <PropertyRef Name="BookingID" />
+      <PropertyRef Name="SessionID" />
+      <PropertyRef Name="SeatNum" />
+    </Key>
+    <Property Name="BookingID" Type="int" Nullable="false" />
+    <Property Name="SessionID" Type="int" Nullable="false" />
+    <Property Name="SeatNum" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Cineplex">
+    <Key>
+      <PropertyRef Name="CineplexID" />
+    </Key>
+    <Property Name="CineplexID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="Location" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="LongDescription" Type="nvarchar(max)" />
+    <Property Name="ImageUrl" Type="nvarchar(max)" />
+  </EntityType>
+  <EntityType Name="CorporateEvent">
+    <Key>
+      <PropertyRef Name="EventID" />
+    </Key>
+    <Property Name="EventID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="Title" Type="nvarchar" Nullable="false" MaxLength="100" />
+    <Property Name="ShortDescription" Type="nvarchar(max)" />
+    <Property Name="LongDescription" Type="nvarchar(max)" />
+    <Property Name="ImageUrl" Type="nvarchar(max)" />
+  </EntityType>
+  <EntityType Name="Enquiry">
+    <Key>
+      <PropertyRef Name="EnquiryID" />
+    </Key>
+    <Property Name="EnquiryID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="Email" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Message" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Movie">
+    <Key>
+      <PropertyRef Name="MovieID" />
+    </Key>
+    <Property Name="MovieID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="Title" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="LongDescription" Type="nvarchar(max)" />
+    <Property Name="ImageUrl" Type="nvarchar(max)" />
+  </EntityType>
+  <EntityType Name="MovieComingSoon">
+    <Key>
+      <PropertyRef Name="MovieComingSoonID" />
+    </Key>
+    <Property Name="MovieComingSoonID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="Title" Type="nvarchar" Nullable="false" MaxLength="100" />
+    <Property Name="LongDescription" Type="nvarchar(max)" />
+    <Property Name="ImageUrl" Type="nvarchar(max)" />
+    <Property Name="RealeseTime" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="MovieSession">
+    <Key>
+      <PropertyRef Name="SessionID" />
+    </Key>
+    <Property Name="SessionID" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="MovieID" Type="int" Nullable="false" />
+    <Property Name="CineplexID" Type="int" Nullable="false" />
+    <Property Name="ShowTime" Type="datetime" Nullable="false" />
+    <Property Name="SeatSold" Type="int" Nullable="false" />
+    <Property Name="MaxSeatNum" Type="int" Nullable="false" />
+    <Property Name="Price" Type="money" Nullable="false" />
+  </EntityType>
+  <Association Name="FK__BookingIt__Booki__4959E263">
+    <End Role="Booking" Type="MovieModel.Store.Booking" Multiplicity="1" />
+    <End Role="BookingItem" Type="MovieModel.Store.BookingItem" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Booking">
+        <PropertyRef Name="BookingID" />
+      </Principal>
+      <Dependent Role="BookingItem">
+        <PropertyRef Name="BookingID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__BookingIt__Sessi__4A4E069C">
+    <End Role="MovieSession" Type="MovieModel.Store.MovieSession" Multiplicity="1" />
+    <End Role="BookingItem" Type="MovieModel.Store.BookingItem" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="MovieSession">
+        <PropertyRef Name="SessionID" />
+      </Principal>
+      <Dependent Role="BookingItem">
+        <PropertyRef Name="SessionID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__MovieSess__Cinep__41B8C09B">
+    <End Role="Cineplex" Type="MovieModel.Store.Cineplex" Multiplicity="1" />
+    <End Role="MovieSession" Type="MovieModel.Store.MovieSession" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Cineplex">
+        <PropertyRef Name="CineplexID" />
+      </Principal>
+      <Dependent Role="MovieSession">
+        <PropertyRef Name="CineplexID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__MovieSess__Movie__40C49C62">
+    <End Role="Movie" Type="MovieModel.Store.Movie" Multiplicity="1" />
+    <End Role="MovieSession" Type="MovieModel.Store.MovieSession" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Movie">
+        <PropertyRef Name="MovieID" />
+      </Principal>
+      <Dependent Role="MovieSession">
+        <PropertyRef Name="MovieID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Function Name="GetAllComingMovie" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetAllCorporateEvent" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="GetAllMovie" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+</Schema>

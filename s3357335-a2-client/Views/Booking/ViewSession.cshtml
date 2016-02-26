@@ -1,0 +1,80 @@
+﻿@model s3357335_a2_client.Movie
+
+@{
+    ViewBag.Title = "View Session";
+}
+<!-- a Section -->
+<section class="container">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="row">
+                <div class="col-xs-3">
+                    <div class="thumbnail">
+                        <img  class="img-rounded" src="@Html.DisplayFor(model => model.ImageUrl)" alt="" />
+                        <div class="caption" style="text-align: center;">
+                            <h4>
+                                @Html.DisplayFor(model => model.Title)
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-8">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 style="font-weight: bold; font-family: Arial">About Movie</h4>
+                        </div>
+                        <div class="panel-body">
+                            <p>
+                                @Html.DisplayFor(model => model.LongDescription)
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- // first row -->
+            <div class="row">
+                <div class="page-header1">
+                    <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                        <div class="btn-group col-md-3">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                <span class="glyphicon glyphicon glyphicon-map-marker" aria-hidden="true"></span>
+                                <span>&nbsp;Select Location</span>
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a href='@Url.Action("ViewSession", "Booking", new { movieId = Html.DisplayFor(model => model.MovieID), cinemaId = 1 })'>St Kilda</a></li>
+                                <li><a href='@Url.Action("ViewSession", "Booking", new { movieId = Html.DisplayFor(model => model.MovieID), cinemaId = 2 })'>Fitzroy</a></li>
+                                <li><a href='@Url.Action("ViewSession", "Booking", new { movieId = Html.DisplayFor(model => model.MovieID), cinemaId = 3 })'>Melbourne CBD</a></li>
+                                <li><a href='@Url.Action("ViewSession", "Booking", new { movieId = Html.DisplayFor(model => model.MovieID), cinemaId = 4 })'>Sunshine</a></li>
+                                <li><a href='@Url.Action("ViewSession", "Booking", new { movieId = Html.DisplayFor(model => model.MovieID), cinemaId = 5 })'>Lilydale</a></li>
+                            </ul>
+                        </div>
+                        <!-- /btn-group-group -->
+                    </div>
+                     &nbsp;ALL THE SESSIONS TIME&nbsp;@Session["cinemaLocation"]
+                </div>
+            </div>
+            <!-- // second row -->
+            <div class="row">
+                @if (ViewBag.sessions != null)
+                {
+                    <!-- Iterate through each value in the Items collection of your ViewBag -->
+                    foreach (var mSession in ViewBag.sessions)
+                    {
+                    <div class="well well-sm">
+                        <div class="row">
+                            <div class="col-xs-6">
+                                Session Time: @mSession.ShowTime &nbsp;|&nbsp;<span class="heavy">At @mSession.Cineplex.Location</span>
+                            </div>
+                            <div class="col-xs-3">
+                                <a class="btn btn-default" href='@Url.Action("Create", "Booking", new { sessionId = mSession.SessionID })'>Book</a>
+                            </div>
+                        </div>
+                    </div>
+                    }
+                }
+            </div>
+            <!-- // third row -->
+        </div>
+    </div>
+</section>

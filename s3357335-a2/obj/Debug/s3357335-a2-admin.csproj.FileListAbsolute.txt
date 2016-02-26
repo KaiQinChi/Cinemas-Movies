@@ -1,0 +1,7 @@
+F:\VisualStudioSpace\s3357335-a2\s3357335-a2\bin\s3357335-a2.dll
+F:\VisualStudioSpace\s3357335-a2\s3357335-a2\bin\s3357335-a2.pdb
+F:\VisualStudioSpace\s3357335-a2\s3357335-a2\obj\Debug\s3357335-a2.dll
+F:\VisualStudioSpace\s3357335-a2\s3357335-a2\obj\Debug\s3357335-a2.pdb
+F:\VisualStudioSpace\s3357335-a2\s3357335-a2\obj\Debug\s3357335_a2.Properties.Resources.resources
+F:\VisualStudioSpace\s3357335-a2\s3357335-a2\obj\Debug\s3357335-a2-admin.csproj.GenerateResource.Cache
+F:\VisualStudioSpace\s3357335-a2\s3357335-a2\obj\Debug\s3357335-a2-admin.csprojResolveAssemblyReference.cache

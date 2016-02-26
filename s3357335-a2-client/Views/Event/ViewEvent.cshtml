@@ -1,0 +1,43 @@
+﻿@model s3357335_a2_client.CorporateEvent
+
+@{
+    ViewBag.Title = "Event Detail";
+}
+
+<!-- a Section -->
+<section class="container">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="page-header1">
+                &nbsp;Event Detail
+            </div>
+            <div class="row">
+                <div class="col-xs-4">
+                    <div class="thumbnail">
+                        <img class="group list-group-image" src="@Html.DisplayFor(model => model.ImageUrl)" alt="" />
+                        <div class="caption" style="text-align: center;">
+                            <h5>
+                                @Html.DisplayFor(model => model.Title)
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-8">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 style="font-weight: bold; font-family: Arial">@Html.DisplayFor(model => model.Title)</h4>
+                        </div>
+                        <div class="panel-body">
+                            <p class="medium">
+                                Introduction: &nbsp;@Html.DisplayFor(model => model.ShortDescription)
+                            </p>
+                            <p class="medium">
+                                About: &nbsp;@Html.DisplayFor(model => model.LongDescription)
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

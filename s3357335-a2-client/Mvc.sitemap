@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<mvcSiteMap xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns="http://mvcsitemap.codeplex.com/schemas/MvcSiteMap-File-4.0"
+            xsi:schemaLocation="http://mvcsitemap.codeplex.com/schemas/MvcSiteMap-File-4.0 MvcSiteMapSchema.xsd">
+
+  <mvcSiteMapNode title="Home" controller="Home" action="Index">
+    <mvcSiteMapNode title="Booking" controller="Booking" action="Index">
+      <mvcSiteMapNode title="New Booking" controller="Booking" action="Create"/>
+      <mvcSiteMapNode title="Edit Booking" controller="Booking" action="Edit"/>
+      <mvcSiteMapNode title="Payment" controller="Booking" action="Payment"/>
+    </mvcSiteMapNode>
+
+    <mvcSiteMapNode title="Movie" controller="Home" action="Movie" >
+      <mvcSiteMapNode title="View Session" controller="Booking" action="ViewSession"/>
+    </mvcSiteMapNode>
+
+    <mvcSiteMapNode title="Cinema" controller="Home" action="Cinema">
+      <mvcSiteMapNode title="View Session" controller="Booking" action="ViewSession"/>
+    </mvcSiteMapNode>
+    
+    <mvcSiteMapNode title="Event" controller="Event" action="Index">
+      <mvcSiteMapNode title="View Event" controller="Event" action="ViewEvent"/>
+    </mvcSiteMapNode>
+  </mvcSiteMapNode>
+
+</mvcSiteMap>

@@ -1,0 +1,166 @@
+﻿@{
+    ViewBag.Title = "Events";
+}
+
+<!-- a Section -->
+<section class="container">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="page-header1">
+                &nbsp;Events of Corporate
+            </div>
+            <div id="events" class="row list-group">
+                <!-- Ensure your ViewBag property isn't null as List<s3357335_a2_client.CorporateEvent>)-->
+                @if (ViewBag.events != null)
+                {
+                    <!-- Iterate through each value in the Items collection of your ViewBag -->
+                    foreach (var cEvent in ViewBag.events)
+                    {
+                    <div class="item  col-lg-4">
+                        <div class="thumbnail">
+                            <img  class="img-rounded" src="@cEvent.ImageUrl" alt="" />
+                            <div class="caption">
+                                <h5 style="color: #ff6a00">@cEvent.Title</h5>
+                                <p class="small1 ShortDesc">
+                                    @cEvent.ShortDescription
+                                </p>
+                                <div class="row">
+                                    <a style="float: right; margin-right: 25px;" href='@Url.Action("ViewEvent", "Event", new { eventId = cEvent.EventID })'><span class="glyphicon glyphicon-info-sign"></span>&nbsp;More Info</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    }
+                }
+            </div>
+        </div>
+        <div class="col-lg-1 mar">
+            <button class="btn btn-info" id="Enquiry">Enquiry</button>
+            <br />
+            <br />
+            <button class="btn btn-info" id="Chat">Chat Now</button>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <div class="modal fade" id="myModal" role="dialog">
+        <!-- Modal -->
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #76cbf6">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4>Your Message</h4>
+                </div>
+                @using (Html.BeginForm())
+                {
+                    <div class="modal-body" style="padding: 10px 50px;">
+                        <div class="form-group">
+                            <label for="email">&nbsp;Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required="required" />
+                        </div>
+                        <div class="form-group">
+                            <label for="message">&nbsp;Message</label>
+                            <input type="text" class="form-control" id="message" name="message" required="required" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="booking-details">
+                            <button type="submit" class="btn btn-warning">Send Now</button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container">
+    <div class="modal fade" id="chatModal" role="dialog">
+        <!-- Modal -->
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #ffffff">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4>Chat Window</h4>
+                </div>
+                <div class="modal-body" style="padding: 10px 20px;">
+                    <div class="form-group">
+                        <label  >&nbsp;Your Name&nbsp;</label><span id="yourName"></span>
+                        <br />
+                        <input type="hidden" id="displayname" />
+                        <label for="chatMessage">&nbsp;Message&nbsp;</label>
+                        <input type="text" id="chatMessage" name="chatMessage" required="required" />
+                        <button type="submit" class="btn btn-info" id="sendmessage">Send</button>
+                    </div>
+                    <div class="form-group">
+                        <ul id="discussion">
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#Enquiry").click(function () {
+            $("#myModal").modal();
+        });
+        $("#Chat").click(function () {
+            $("#chatModal").modal();
+            var name = $('#displayname').val();
+            if(!name){
+                // Get the user name and store it to prepend to messages.
+                $('#displayname').val(prompt('Enter your name:', ''));
+                $('#yourName').text($('#displayname').val());
+            }
+        });
+
+        var mes = @Html.Raw(Json.Encode(@ViewBag.mes)); 
+        if(mes != null)
+            alert(mes);
+    });
+</script>
+
+@section scripts {
+    <!--Script references. -->
+    <!--The jQuery library is required and is referenced by default in _Layout.cshtml. -->
+    <!--Reference the SignalR library. -->
+    <script src="~/Scripts/jquery.signalR-2.2.0.min.js"></script>
+    <!--Reference the autogenerated SignalR hub script. -->
+    <script src="~/signalr/hubs"></script>
+    <!--SignalR script to update the chat page and send messages.-->
+    <script>
+        $(function () {
+            // Reference the auto-generated proxy for the hub.  
+            var chat = $.connection.chatHub;
+            // Create a function that the hub can call back to display messages.
+            chat.client.addNewMessageToPage = function (name, message) {
+                // Add the message to the page. 
+                $('#discussion').append('<li><strong>' + htmlEncode(name) 
+                    + '</strong>: ' + htmlEncode(message) + '</li>');
+            };
+            // Set initial focus to message input box.  
+            $('#chatMessage').focus();
+            // Start the connection.
+            $.connection.hub.start().done(function () {
+                $('#sendmessage').click(function () {
+                    // Call the Send method on the hub. 
+                    chat.server.send($('#displayname').val(), $('#chatMessage').val());
+                    // Clear text box and reset focus for next comment. 
+                    $('#chatMessage').val('').focus();
+                });
+            });
+        });
+        // This optional function html-encodes messages for display in the page.
+        function htmlEncode(value) {
+            var encodedValue = $('<div />').text(value).html();
+            return encodedValue;
+        }
+    </script>
+}

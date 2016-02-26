@@ -1,0 +1,350 @@
+﻿@model s3357335_a2_client.MovieSession
+
+@{
+    ViewBag.Title = "Edit Booking Item";
+    var item = ViewBag.bookingItem;
+}
+
+<script src="~/Scripts/jQuery-Seat-Charts.js"></script>
+<link href="~/Content/jquery-seat-charts.css" rel="stylesheet" />
+
+<!-- a Section -->
+<section class="container">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="page-header1">
+                &nbsp;New Item
+            </div>
+            <table class="table">
+                <thead style="background-color: #f7db41">
+                    <tr>
+                        <th>Movie Title</th>
+                        <th>Location</th>
+                        <th>Session Time</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody style="background-color: #fff">
+                    <tr>
+                        <td>@Html.DisplayFor(model => model.Movie.Title)</td>
+                        <td>@Html.DisplayFor(model => model.Cineplex.Location)</td>
+                        <td>@Html.DisplayFor(model => model.ShowTime)</td>
+                        <td>$<span id="price">@Html.DisplayFor(model => model.Price)</span>
+                        </td>
+                        <td>
+                            <div class="btn-group">
+                                <a id="quan" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@item.quantity</a><span class="caret"></span>
+                                <ul class="dropdown-menu scrollable-menu" role="menu">
+                                    @for (int i = 0; i < 21; i++)
+                                    {
+                                        <li><a href="#" id='quan-@i'>@i</a></li>
+                                    }
+                                </ul>
+                            </div>
+                            <!-- /btn-group -->
+                        </td>
+                        <td>$<span id="Subtotal" aria-label="Amount (to the nearest dollar)">@item.payTotal</span>.00 
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="row">
+                <div class="col-xs-3">
+                    <img  class="img-rounded" style="width:150px;height:200px;margin-bottom:10px;" src="@Html.DisplayFor(model => model.Movie.ImageUrl)" alt="" />
+                </div>
+                <div class="col-xs-5">
+                    @using (Html.BeginForm("Edit", "Booking", FormMethod.Post))
+                    { 
+                        <div class="input-group" style="float: right">
+                            <input type="hidden" id="bookingCookieId" name="bookingCookieId" value="@item.Id">
+                            <input type="hidden" id="quantity" name="quantity" value="@item.quantity">
+                            <input type="hidden" id="seatNO" name="seatNO" value="@item.seatNO">
+                            <input type="hidden" id="payTotal" name="payTotal" value="@item.payTotal">
+                            <button class="btn btn-info" type="button" id="selectSeat">Change Seat</button>&nbsp;&nbsp;
+                            <button class="btn btn-info" type="submit" id="addItem">Save</button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Seat Selection</h4>
+                </div>
+                <div class="modal-body">
+                    <div id="seat-map">
+                        <div class="front-indicator">Screen</div>
+                    </div>
+                    <div id="legend"></div>
+                </div>
+                <div class="modal-footer">
+                    <div class="booking-details">
+                        <h5>&nbsp;Selected Seats(<span id="counter">@item.quantity</span>):
+                            <span id="seatsChose" class="heavy">@item.seatNO</span>
+                        </h5>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Comfire</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var firstSeatLabel = 1;
+
+    $(document).ready(function () {
+        var $cart = $('#selected-seats'),
+            $counter = $('#counter'),
+            $total = $('#total'),
+            sc = $('#seat-map').seatCharts({
+                map: [
+                    'eeeee',
+                    'eeeee',
+                    'eeeee',
+                    'eeeee'
+                ],
+                seats: {
+                    f: {
+                        price: 100,
+                        classes: 'first-class', //your custom CSS class
+                        category: 'First Class'
+                    },
+                    e: {
+                        price: 40,
+                        classes: 'economy-class', //your custom CSS class
+                        category: 'Economy Class'
+                    }
+
+                },
+                naming: {
+                    top: false,
+                    getLabel: function (character, row, column) {
+                        return firstSeatLabel++;
+                    },
+                },
+                legend: {
+                    node: $('#legend'),
+                    items: [
+                        ['e', 'available', ' Vacant  Seat'],
+                        ['f', 'unavailable', ' Already Booked']
+                    ]
+                },
+                click: function () {
+                    if (this.status() == 'available') {
+                        var counter = sc.find('selected').length + 1;
+                        var quantity = $('#quan').text();
+
+                        // compare the seats number selected with ticket number selected
+                        if(counter > quantity)
+                        {
+                            alert("Select "+ quantity + " seats only.");
+                            return 'available';
+                        }else
+                        {
+                            //let's create a new text which we  add to the cart items
+                            $('#seatsChose').append(this.settings.label+"|");
+                            // this text used for submiting seats selected to server
+                            $('#seatNO').val($('#seatsChose').text());
+
+                            /*
+                             * Lets update the counter and total
+                             *
+                             * .find function will not find the current seat, because it will change its stauts only after return
+                             * 'selected'. This is why we have to add 1 to the length and the current seat price to the total.
+                             */
+                            $counter.text(sc.find('selected').length + 1);
+
+                            return 'selected';
+                        }
+                    } else if (this.status() == 'selected') {
+                        //update the counter
+                        $counter.text(sc.find('selected').length - 1);
+
+                        //remove the seat
+                        var seats = $('#seatsChose').text();
+                        var seatid = this.settings.label+"|";
+                        seats = seats.replace(seatid,'');
+                        $('#seatsChose').text(seats);
+
+                        // this text used for submit seats selected to server
+                        $('#seatNO').val(seats);
+
+                        //seat has been vacated
+                        return 'available';
+                    } else if (this.status() == 'unavailable') {
+                        //seat has been already booked
+                        return 'unavailable';
+                    } else {
+                        return this.style();
+                    }
+                }
+            });
+
+        //this will handle "[cancel]" link clicks
+        $('#selected-seats').on('click', '.cancel-cart-item', function () {
+            //let's just trigger Click event on the appropriate seat, so we don't have to repeat the logic here
+            sc.get($(this).parents('li:first').data('seatId')).click();
+        });
+
+        // the seats are the seats selected in this book item
+        var selectSeats  = @Html.Raw(Json.Encode(@ViewBag.selectSeats));
+        for (var i = 0; i < selectSeats.length; i++) {
+            sc.get([selectSeats[i]]).status('selected');
+        }
+
+        // all other items seats have already been booked
+        var bookedSeatsArray = @Html.Raw(Json.Encode(@ViewBag.bookedSeats)); 
+        for (var i = 0; i < bookedSeatsArray.length; i++) {
+            sc.get([bookedSeatsArray[i]]).status('unavailable');
+        }
+    });
+
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#selectSeat").click(function () {
+            $("#myModal").modal();
+        });
+        $("#quan-0").click(function () {
+            var price = $('#price').text();
+            var quantity = $('#quan-0').text();
+            $('#quantity').val(quantity); $('#quan').text(quantity);
+            $('#Subtotal').text(price * quantity);$('#payTotal').val(price * quantity);
+            $('#selectSeat').attr('disabled','disabled');
+            $('#addItem').attr('disabled','disabled');
+        });
+        $("#quan-1").click(function () {
+            var price = $('#price').text();
+            var quantity = $('#quan-1').text();
+            $('#quantity').val(quantity); $('#quan').text(quantity);
+            $('#Subtotal').text(price * quantity);$('#payTotal').val(price * quantity);$('#selectSeat').removeAttr('disabled');$('#addItem').removeAttr('disabled');
+        })
+        $("#quan-2").click(function () {
+            var price = $('#price').text();
+            var quantity = $('#quan-2').text();
+            $('#quantity').val(quantity); $('#quan').text(quantity);
+            $('#Subtotal').text(price * quantity);$('#payTotal').val(price * quantity);$('#selectSeat').removeAttr('disabled');$('#addItem').removeAttr('disabled');
+        })
+        $("#quan-3").click(function () {
+            var price = $('#price').text();
+            var quantity = $('#quan-3').text();
+            $('#quantity').val(quantity); $('#quan').text(quantity);
+            $('#Subtotal').text(price * quantity);$('#payTotal').val(price * quantity);$('#selectSeat').removeAttr('disabled');$('#addItem').removeAttr('disabled');
+        })
+        $("#quan-8").click(function () {
+            var price = $('#price').text();
+            var quantity = $('#quan-8').text();
+            $('#quantity').val(quantity); $('#quan').text(quantity);
+            $('#Subtotal').text(price * quantity);$('#payTotal').val(price * quantity);$('#selectSeat').removeAttr('disabled');$('#addItem').removeAttr('disabled');
+        })
+        $("#quan-9").click(function () {
+            var price = $('#price').text();
+            var quantity = $('#quan-9').text();
+            $('#quantity').val(quantity); $('#quan').text(quantity);
+            $('#Subtotal').text(price * quantity);$('#payTotal').val(price * quantity);$('#selectSeat').removeAttr('disabled');$('#addItem').removeAttr('disabled');
+        })
+        $("#quan-4").click(function () {
+            var price = $('#price').text();
+            var quantity = $('#quan-4').text();
+            $('#quantity').val(quantity); $('#quan').text(quantity);
+            $('#Subtotal').text(price * quantity);$('#payTotal').val(price * quantity);$('#selectSeat').removeAttr('disabled');$('#addItem').removeAttr('disabled');
+        })
+        $("#quan-5").click(function () {
+            var price = $('#price').text();
+            var quantity = $('#quan-5').text();
+            $('#quantity').val(quantity); $('#quan').text(quantity);
+            $('#Subtotal').text(price * quantity);$('#payTotal').val(price * quantity);$('#selectSeat').removeAttr('disabled');$('#addItem').removeAttr('disabled');
+        })
+        $("#quan-6").click(function () {
+            var price = $('#price').text();
+            var quantity = $('#quan-6').text();
+            $('#quantity').val(quantity); $('#quan').text(quantity);
+            $('#Subtotal').text(price * quantity);$('#payTotal').val(price * quantity);$('#selectSeat').removeAttr('disabled');$('#addItem').removeAttr('disabled');
+        })
+        $("#quan-7").click(function () {
+            var price = $('#price').text();
+            var quantity = $('#quan-7').text();
+            $('#quantity').val(quantity); $('#quan').text(quantity);
+            $('#Subtotal').text(price * quantity);$('#payTotal').val(price * quantity);$('#selectSeat').removeAttr('disabled');$('#addItem').removeAttr('disabled');
+        })
+        $("#quan-10").click(function () {
+            var price = $('#price').text();
+            var quantity = $('#quan-10').text();
+            $('#quantity').val(quantity); $('#quan').text(quantity);
+            $('#Subtotal').text(price * quantity);$('#payTotal').val(price * quantity);$('#selectSeat').removeAttr('disabled');$('#addItem').removeAttr('disabled');
+        })
+        $("#quan-11").click(function () {
+            var price = $('#price').text();
+            var quantity = $('#quan-11').text();
+            $('#quantity').val(quantity); $('#quan').text(quantity);
+            $('#Subtotal').text(price * quantity);$('#payTotal').val(price * quantity);$('#selectSeat').removeAttr('disabled');$('#addItem').removeAttr('disabled');
+        })
+        $("#quan-12").click(function () {
+            var price = $('#price').text();
+            var quantity = $('#quan-12').text();
+            $('#quantity').val(quantity); $('#quan').text(quantity);
+            $('#Subtotal').text(price * quantity);$('#payTotal').val(price * quantity);$('#selectSeat').removeAttr('disabled');$('#addItem').removeAttr('disabled');
+        })
+        $("#quan-13").click(function () {
+            var price = $('#price').text();
+            var quantity = $('#quan-13').text();
+            $('#quantity').val(quantity); $('#quan').text(quantity);
+            $('#Subtotal').text(price * quantity);$('#payTotal').val(price * quantity);$('#selectSeat').removeAttr('disabled');$('#addItem').removeAttr('disabled');
+        })
+        $("#quan-14").click(function () {
+            var price = $('#price').text();
+            var quantity = $('#quan-14').text();
+            $('#quantity').val(quantity); $('#quan').text(quantity);
+            $('#Subtotal').text(price * quantity);$('#payTotal').val(price * quantity);$('#selectSeat').removeAttr('disabled');$('#addItem').removeAttr('disabled');
+        })
+        $("#quan-15").click(function () {
+            var price = $('#price').text();
+            var quantity = $('#quan-15').text();
+            $('#quantity').val(quantity); $('#quan').text(quantity);
+            $('#Subtotal').text(price * quantity);$('#payTotal').val(price * quantity);$('#selectSeat').removeAttr('disabled');$('#addItem').removeAttr('disabled');
+        })
+        $("#quan-16").click(function () {
+            var price = $('#price').text();
+            var quantity = $('#quan-16').text();
+            $('#quantity').val(quantity); $('#quan').text(quantity);
+            $('#Subtotal').text(price * quantity);$('#payTotal').val(price * quantity);$('#selectSeat').removeAttr('disabled');$('#addItem').removeAttr('disabled');
+        })
+        $("#quan-17").click(function () {
+            var price = $('#price').text();
+            var quantity = $('#quan-17').text();
+            $('#quantity').val(quantity); $('#quan').text(quantity);
+            $('#Subtotal').text(price * quantity);$('#payTotal').val(price * quantity);$('#selectSeat').removeAttr('disabled');$('#addItem').removeAttr('disabled');
+        })
+        $("#quan-18").click(function () {
+            var price = $('#price').text();
+            var quantity = $('#quan-18').text();
+            $('#quantity').val(quantity); $('#quan').text(quantity);
+            $('#Subtotal').text(price * quantity);$('#payTotal').val(price * quantity);$('#selectSeat').removeAttr('disabled');$('#addItem').removeAttr('disabled');
+        })
+        $("#quan-19").click(function () {
+            var price = $('#price').text();
+            var quantity = $('#quan-19').text();
+            $('#quantity').val(quantity); $('#quan').text(quantity);
+            $('#Subtotal').text(price * quantity);$('#payTotal').val(price * quantity);$('#selectSeat').removeAttr('disabled');$('#addItem').removeAttr('disabled');
+        })
+        $("#quan-20").click(function () {
+            var price = $('#price').text();
+            var quantity = $('#quan-20').text();
+            $('#quantity').val(quantity); $('#quan').text(quantity);
+            $('#Subtotal').text(price * quantity);$('#payTotal').val(price * quantity);$('#selectSeat').removeAttr('disabled');$('#addItem').removeAttr('disabled');
+        })
+    });
+</script>

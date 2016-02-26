@@ -1,0 +1,121 @@
+﻿@model s3357335_a2_client.Models.CreditCardForm
+
+@{
+    ViewBag.Title = "All Booking Items";
+    var totalMoney = 0;
+}
+
+<!-- a Section -->
+<section class="container">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="page-header1">
+                &nbsp;Booking Items
+            </div>
+            <table class="table">
+                <thead style="background-color: #f7db41">
+                    <tr>
+                        <th>Movie Title</th>
+                        <th>Location</th>
+                        <th>Session Time</th>
+                        <th>Seat Numbers</th>
+                        <th>Quantity</th>
+                        <th>Subtotal</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody style="background-color: #fff">
+                    @foreach (var bc in ViewBag.bookingCookiesList)
+                    {
+                        totalMoney += bc.payTotal;
+                        <tr>
+                            <td>@bc.title</td>
+                            <td>@bc.location</td>
+                            <td>@bc.sessionTime</td>
+                            <td>@bc.seatNO</td>
+                            <td>@bc.quantity</td>
+                            <td>$<span>@bc.payTotal</span>.00</td>
+                            <td>
+                                <a href='@Url.Action("Edit", "Booking", new { bookingCookieId = bc.Id })'>Edit</a>&nbsp;|  
+                                <a href='@Url.Action("Delete", "Booking", new { bookingCookieId = bc.Id })'>Delete</a>
+                            </td>
+                        </tr>
+                    }
+                    <tr>
+                        <td colspan="7">
+                            <span class="heavy">Total Cost: </span>$@totalMoney
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+@if (Enumerable.Count(ViewBag.bookingCookiesList) > 0)
+{
+<!-- a Section -->
+<section class="container">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="page-header1">
+                &nbsp;Payment
+            </div>
+            <!-- Modal -->
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color: #ffd800">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4><span class="glyphicon glyphicon-yen"></span>Your Payment</h4>
+                    </div>
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true)
+                        <div class="modal-body" style="padding: 20px 50px;">
+                            <div class="form-group">
+                                <label><span class="glyphicon glyphicon-user"></span>&nbsp;Your Email</label>
+                                @Html.TextBoxFor(model => model.Email, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group">
+                                <span class="glyphicon glyphicon-credit-card"></span>&nbsp;@Html.LabelFor(model => model.CreditCardType, htmlAttributes: new { @class = "control-label" })
+                                <br />
+                                @foreach (s3357335_a2_client.Utilities.CardType cardType in Enum.GetValues(typeof(s3357335_a2_client.Utilities.CardType)))
+                                {
+                                    if (cardType == s3357335_a2_client.Utilities.CardType.Unknown)
+                                    { continue; }
+
+                                    if (cardType == Model.CreditCardType)
+                                    {
+                                    @Html.RadioButtonFor(model => model.CreditCardType, (int)cardType, new { id = String.Empty, @checked = "checked" })
+                                    }
+                                    else
+                                    {
+                                    @Html.RadioButtonFor(model => model.CreditCardType, (int)cardType, new { id = String.Empty })
+                                    }
+                                    <span style="margin-left: 5px;">&nbsp;@cardType</span>
+                                    <br />
+                                }
+                                @Html.ValidationMessageFor(model => model.CreditCardType, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group">
+                                <label for="cardNum"><span class="glyphicon glyphicon-credit-card"></span>&nbsp;Card Number</label>
+                                @Html.TextBoxFor(model => model.CreditCardNumber, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.CreditCardNumber, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <div class="booking-details">
+                                <button type="submit" class="btn btn-warning">pay now</button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+}
+    

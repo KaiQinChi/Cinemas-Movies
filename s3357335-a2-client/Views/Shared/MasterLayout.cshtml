@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/theme/css")
+    @Scripts.Render("~/bundles/main/js")
+    @Scripts.Render("~/bundles/jqueryval")
+</head>
+<body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top" style="background-color:rgba(10, 9, 9, 0.20);">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-custom navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-main-collapse">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <a class="navbar-brand page-scroll" href="#page-top">
+                    <span class="glyphicon glyphicon-film" aria-hidden="true"></span><span class="light large">&nbsp;FANCY MOVIE</span>
+                </a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a class="page-scroll" href='@Url.Action("Index","Home")'><span class="heavy medium">home</span></a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href='@Url.Action("Cinema","Home")'><span class="heavy medium">cinemas</span></a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href='@Url.Action("Movie","Home")'><span class="heavy medium">movies</span></a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href='@Url.Action("Index","Event")'><span class="heavy medium">events</span></a>
+                    </li>
+                          <li>
+                        <a class="page-scroll" href='@Url.Action("Index","Booking")'><span class="glyphicon glyphicon-shopping-cart"></span><span class="heavy small">&nbsp;Booking</span></a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Intro Header -->
+    <header class="intro">
+        <div class="intro-body">
+            <div class="container">
+            </div>
+        </div>
+    </header>
+
+    <div id="body">
+        <section class="container mar">
+            <div class="row">
+                <div class="col-lg-10 col-lg-offset-1 heavy" style="color:#fff;font-size:medium;">
+                    @Html.MvcSiteMap().SiteMapPath()
+                </div>
+            </div>
+        </section>
+        @RenderBody()
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container text-center">
+            <p>Copyright &copy; Fancy Movie</p>
+        </div>
+    </footer>
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>
