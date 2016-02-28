@@ -1,5 +1,5 @@
 # Cinemas-Movies
-Part A: Customer MVC website
+>> Part A: Customer MVC website
 
 It is an MVC web application, use Entity Framework(EF) for all the data-fetching. Bootstrap is used to play with the look and feel of the admin website. 
 
@@ -15,7 +15,7 @@ enquiry form on this page.
 In addition, a graphical booking feature so that a user can choose their seat while booking for a movie session.
 
 
-Part B: Admin Web forms application
+>> Part B: Admin Web forms application
 
 After logging-in, admin should see a control panel page. It is able to 
 2.1 Add/Edit/Delete coming movies information 
