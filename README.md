@@ -15,9 +15,13 @@ enquiry form on this page.
 In addition, a graphical booking feature so that a user can choose their seat while booking for a movie session.
 
 
+</br>
 >> Part B: Admin Web forms application
 
-After logging-in, admin should see a control panel page. It is able to 
-2.1 Add/Edit/Delete coming movies information 
-2.2 Add/Edit/Delete scheduled event booking information 
-2.3 Password should be stored in an encrypted format in the database table. 
+After logging-in, admin should see a control panel page. It is able to
+
+2.1 Add/Edit/Delete coming movies information.
+
+2.2 Add/Edit/Delete scheduled event booking information.
+
+2.3 Password will be stored in an encrypted format in the database table. 
